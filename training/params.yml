@@ -1,22 +1,21 @@
 base:
   project: base-project
-  train_cols: short_desc
-  target_col: ticket_type
+  train_cols: SepalLengthCm,SepalWidthCm,PetalLengthCm,PetalWidthCm
+  target_col: Species
 
 data_source:
-  source: data/source/ticket_type.csv #Could be any remote source
+  source: data/source/Iris.csv #Could be any remote source
 
 processed_data:
-  dataset_csv: data/processed/ticket_train.csv
+  dataset_csv: data/processed/iris_train.csv
 
 split_data:
   train_size: 0.888
 
 estimators:
-  nlp_lr_training:
+  lr_training:
     params:
       random_state: 42
-      penalty: none
 model_dir: saved_models
 
 reports:
@@ -30,6 +29,6 @@ webapp_model_dir: prediction_service/model/model.joblib
 
 mlflow_config:
   artifacts_dir: artifacts
-  experiment_name: TicketTypeExperiment
+  experiment_name: IrisExperiment
   run_name: mlops
   remote_server_uri: http://127.0.0.1:1234

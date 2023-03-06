@@ -98,11 +98,14 @@ class Classification():
         # self.run.tag(self.args.tag_name)
         return Precision, Recall, Accuracy
 
-    def nlp_lr_training(self):
-        from sklearn.feature_extraction.text import TfidfVectorizer
+    def lr_training(self):
+
         #Read the processed CSV file (Not actual CSV)
-        config = self.read_params(self.args.config)
-        train_filename=config['processed_data']['dataset_csv']
+        act_filename =  self.args.input_csv
+        temp = act_filename.split(".")
+        temp[0] = temp[0]+"_train"
+        train_filename = ".".join(temp)
+        train_filename=act_filename
 
         self.final_df = self.get_data(file_name=train_filename)
 
@@ -110,18 +113,15 @@ class Classification():
         self.y = self.final_df[[self.args.target_column]]
         self.penalty='none'
 
+        config = self.read_params(self.args.config)
         # X_train,X_test,y_train,y_test=train_test_split(self.X,self.y,test_size=1-self.args.train_size,random_state=self.random_state)
         if 'train_size' in config['split_data']:
             self.args.train_size=config['split_data']['train_size']
-        if 'random_state' in config['estimators']['nlp_lr_training']['params']:
-            self.random_state=config['estimators']['nlp_lr_training']['params']['random_state']
-        if 'penalty' in config['estimators']['nlp_lr_training']['params']:
-            self.penalty=config['estimators']['nlp_lr_training']['params']['penalty']
-
+        if 'random_state' in config['estimators']['lr_training']['params']:
+            self.random_state=config['estimators']['lr_training']['params']['random_state']
+        if 'penalty' in config['estimators']['lr_training']['params']:
+            self.penalty=config['estimators']['lr_training']['params']['penalty']
         X_train,X_test,y_train,y_test=train_test_split(self.X,self.y,test_size=1-self.args.train_size,random_state=self.random_state)
-
-        tf_idf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', encoding='latin-1', ngram_range=(1, 3), stop_words="english")
-        X_train = tf_idf.fit_transform(X_train[config['base']['train_cols']]).toarray()
 
         mlflow_config = config["mlflow_config"]
         run_name = mlflow_config["run_name"]
@@ -130,7 +130,7 @@ class Classification():
 
         with mlflow.start_run(run_name=run_name) as mlops_run:
             model = LogisticRegression(penalty=self.penalty, random_state=self.random_state)
-            model.fit(X_train,y_train.values.ravel())
+            model.fit(X_train,y_train)
 
             # 5 Cross-validation
             CV = 5
@@ -138,8 +138,7 @@ class Classification():
             acc = np.mean(accuracies)
             print("Cross Validation accuracy mean: ", acc)
 
-            test_features = tf_idf.transform(X_test[config['base']['train_cols']]).toarray()
-            y_pred = model.predict(test_features)
+            y_pred = model.predict(X_test)
             print("Test Accuracy Score : ", accuracy_score(y_test, y_pred))
 
             joblib.dump(model, self.args.model_path)
@@ -149,7 +148,7 @@ class Classification():
             mlflow.log_metric("Recall", Recall)
             mlflow.log_metric("Accuracy", Accuracy)
 
-            for k,v in config["estimators"]["nlp_lr_training"]["params"].items():
+            for k,v in config["estimators"]["lr_training"]["params"].items():
                 mlflow.log_param(k,v)
 
             tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
@@ -178,4 +177,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     classifier = Classification(args)
     classifier.__init__(args)
-    classifier.nlp_lr_training()
+    classifier.lr_training()

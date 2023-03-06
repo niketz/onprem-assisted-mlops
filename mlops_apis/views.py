@@ -1,11 +1,7 @@
-from django.shortcuts import render
 from mlops_apis import api_methods
 import os
-import requests
 from mlops_apis import functions
 from rest_framework.views import APIView
-import random
-import string
 from onprem_assisted_mlops.settings import BASE_DIR
 from django.http import HttpResponse, JsonResponse
 import json
@@ -112,7 +108,7 @@ class CreateOnpremRepo(APIView):
         print(save_file_location_config)
         
         data = dict()
-        input_params['PROJECT_NAME'] = "A715809"
+        input_params['PROJECT_NAME'] = "niketz"
         # input_params['PROJECT_NAME'] = "IN-ATOS-AARA"
         input_params['base_repo_name']="MLOps-Repository"
         input_params["new_pipeline_commit_repo"] = "https://github.com/{}/{}.git".format(input_params['PROJECT_NAME'],input_params['repo_name'])

@@ -35,12 +35,12 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Pre processing
       run: |-
-        python src/preprocess_script.py --config=params.yml --input_csv=data/source/ticket_type.csv  --training_columns=short_desc --target_column=ticket_type
+        python src/preprocess_script.py --config=params.yml --input_csv=data/source/Iris.csv  --training_columns=SepalLengthCm,SepalWidthCm,PetalLengthCm,PetalWidthCm --target_column=Species
     - name: Train and Evaluate
       run: |-
         mlflow db upgrade sqlite:///mlflow.db
         mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host 127.0.0.1 -p 1234 & disown
-        python src/training.py --config=params.yml --input_csv=data/source/ticket_type.csv  --training_columns=short_desc --target_column=ticket_type --model_path=saved_models/model.joblib --train_size=0.888
+        python src/training.py --config=params.yml --input_csv=data/source/Iris.csv  --training_columns=SepalLengthCm,SepalWidthCm,PetalLengthCm,PetalWidthCm --target_column=Species --model_path=saved_models/model.joblib --train_size=0.888
         fuser -k 1234/tcp
     #- name: Test with pytest
     #  run: |

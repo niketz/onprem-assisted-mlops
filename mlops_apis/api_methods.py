@@ -1,41 +1,18 @@
 import subprocess
 # from onprem_assisted_mlops.settings import URI
 import os
-from azureml.core.dataset import Dataset
-import azureml.core
-from azureml.core import Workspace, Datastore
-from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-import os
-import string
-import random
 from datetime import datetime, timedelta
 from urllib.parse import quote
-import json
 import ruamel.yaml
 from onprem_assisted_mlops.settings import BASE_DIR
 import shutil
-from msrest.authentication import BasicAuthentication
-from azure.devops.v6_0.pipelines.pipelines_client import PipelinesClient
-import shutil
-from azure.devops.v6_0.pipelines.pipelines_client import PipelinesClient
-from azure.devops.v6_0.build.build_client import BuildClient
-from msrest.authentication import BasicAuthentication
-import yaml
-import requests
-import base64
-import json
 import pandas as pd
 from datetime import datetime as dt
-import textwrap
-from ruamel.yaml.scalarstring import PreservedScalarString
-import yaml
 from inspect import getmembers, isfunction, getsourcelines, getsource
 from mlops_apis import functions
 import imp
-import io
 from github import Github
 from git import Repo
-import stat
 
 def script_builder(input_params):
     
@@ -550,7 +527,8 @@ def create_new_repository_and_clone(input_params):
         os.remove(os.path.join(BASE_DIR, clone_directory))
         print("Existing repo folder deleted")
 
-    g = Github("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")
+    # g = Github("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")
+    g = Github("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")
     user = g.get_user()
     try:
         repo = user.create_repo(input_params['repo_name'])
@@ -590,6 +568,7 @@ def commit_and_push_changes_to_new_repo(input_params):
     shutil.copy(input_params['preprocess_file_location'], os.path.join(BASE_DIR,folder_name_for_repo,"src"))
     shutil.copy(input_params['training_file_location'], os.path.join(BASE_DIR,folder_name_for_repo,"src"))
     shutil.copy(input_params['train_config_save_location'], os.path.join(BASE_DIR,folder_name_for_repo))
+    print(BASE_DIR,input_params['dataset'])
     shutil.copy(input_params['dataset'], os.path.join(BASE_DIR,folder_name_for_repo,"data","source"))
     # shutil.copy(input_params['score_file_save_location'], os.path.join(folder_name_for_repo, "inference"))
     # shutil.copy(input_params['smoke_test_file_save_location'], os.path.join(folder_name_for_repo, "tests", "smoke"))

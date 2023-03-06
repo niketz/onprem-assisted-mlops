@@ -1,0 +1,12 @@
+pandas
+scikit-learn
+scipy
+numpy
+mlflow
+joblib
+Django
+djangorestframework
+github
+PyGithub
+ruamel.yaml
+drf-yasg
