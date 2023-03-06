@@ -1,0 +1,32 @@
+base:
+  project: base-project
+  train_cols: TRAIN
+  target_col: TARGET
+
+data_source:
+  source: data/source/base.csv #Could be any remote source
+
+processed_data:
+  dataset_csv: data/processed/base.csv
+
+split_data:
+  train_size: 0.80
+
+estimators:
+      
+model_dir: saved_models
+
+reports:
+  params: reports/params.json
+  scores: reports/scores.json
+  confusion_matrix_csv: reports/confusion_matrix.csv
+  confusion_matrix_png: reports/confusion_matrix.png
+  predictions: reports/predictions.csv
+
+webapp_model_dir: prediction_service/model/model.joblib
+
+mlflow_config:
+  artifacts_dir: artifacts
+  experiment_name: experiment_name
+  run_name: run_name
+  remote_server_uri: http://127.0.0.1:1234
